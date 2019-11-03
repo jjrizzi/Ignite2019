@@ -16,29 +16,28 @@ variables:
 
 steps:
 - task: NuGetToolInstaller@1
+  displayName: Install Nuget
 
 - task: NuGetCommand@2
+  displayName: NuGet Restore
   inputs:
     restoreSolution: '$(solution)'
 
 - task: BatchScript@1
+  displayName: Build Angular
   inputs:
-    filename: '$(Build.SourcesDirectory)/src/PokerLeagueManager.UI.Web/BuildAngular.bat'
+    filename: '$(Build.SourcesDirectory)\src\PokerLeagueManager.UI.Web\BuildAngular.bat'
 
 - task: VSBuild@1
+  displayName: Build Solution
   inputs:
     solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true)"'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
 
 - task: CopyFiles@2
+  displayName: Copy Deployment Packages
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)'
     Contents: |
@@ -50,24 +49,29 @@ steps:
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
     flattenFolders: true
 
-
+- task: CopyFiles@2
+  displayName: Copy Deploy folder
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)\deploy'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)\deploy'
 
 - task: CopyFiles@2
+  displayName: Copy Utility
   inputs:
-    SourceFolder: '$(Build.SourcesDirectorydeploy'
+    SourceFolder: '$(Build.SourcesDirectory)\src\PokerLeagueManager.Utilities\bin\$(BuildConfiguration)'
     Contents: '**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/deploy'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)\Utility'
 
-
-- task: CopyFiles@2
+- task: VSTest@2
+  displayName: Run Unit Tests
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)\/src\PokerLeagueManager.Utilities\bin\Release'
-    Contents: '**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/Utility'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
 
 - task: PublishBuildArtifacts@1
+  displayName: Publish Artifacts
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
-
