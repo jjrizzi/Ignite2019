@@ -52,7 +52,7 @@ steps:
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)'
     Contents: '**/deploy/*'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/deploy'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/'
 
 
 - task: CopyFiles@2
