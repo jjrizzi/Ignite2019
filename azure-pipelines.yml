@@ -28,7 +28,7 @@ steps:
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true)"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
@@ -42,7 +42,11 @@ steps:
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)'
     Contents: |
-      **/*.dacpac
+      **\*.Commands.WebApi.zip
+      **\*.Events.WebApi.zip
+      **\*.Queries.WebApi.zip
+      **\*.UI.Web.zip
+      **\*.dacpac
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
     flattenFolders: true
 
@@ -50,15 +54,15 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)'
-    Contents: '**/deploy/*'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/'
+    SourceFolder: '$(Build.SourcesDirectorydeploy'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/deploy'
 
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)'
-    Contents: '**/src/PokerLeagueManager.Utilties/bin/Debug'
+    SourceFolder: '$(Build.SourcesDirectory)\/src\PokerLeagueManager.Utilities\bin\Release'
+    Contents: '**'
     TargetFolder: '$(Build.ArtifactStagingDirectory)/Utility'
 
 - task: PublishBuildArtifacts@1
